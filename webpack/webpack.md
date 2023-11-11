@@ -26,8 +26,13 @@ A bundler for javascript and friends. Packs many modules into a few bundled asse
 ## 2. Installing & Running Webpack 😎
 
 <br>
-**So first we bundle our assets or js files**:<br><br>
-**What does that mean ?**<br>
+
+**So first we arrange our assets or js files in a good way**:
+<br>
+<br>
+
+**What does that mean ?**
+<br>
 
 -   So basically make folders for each files and arrange them in a good and clean way so we can bundle them together. <br>
 -   Remember we can bundle a single file also.
@@ -50,7 +55,7 @@ project/
 │   ├── fonts/
 │   ├── images/
 │   ├── styles/
-│   └── js/
+│   └── index.js
 ├── index.html
 └── webpack.config.js
 
@@ -159,9 +164,91 @@ It is used for a simple and small projects where all the codes are present in on
 <br>
 
 -   In `javascript` we only have a `js` file which will get minified and added to the `index.html`.
--   But in react we will have a lot `components`, `utils`, `custom functions` etc.
+-   But in react we will have a lot's of `components`, `utils`, `custom functions` etc.
 -   So we have to export them and add the entry point to the `index.js` which will later get minified and used by the application.
 
 -   Don't worry for now we will learn more when we use `webpack.config.js`.
 
+<br>
+<br>
+
 ## 4. Configuring Webpack 🛰
+
+<br>
+
+-   So let's go through what we just learn , right now the webpack is looking for the default location `src/index.js` to bundle the file.
+-   Now create a `webpack.config.js` on root of your project.
+
+-   And This is how the syntax will look like .
+
+```js
+// webpack.config.js
+
+const path = require("path");
+
+module.exports = {
+    entry: "./src/index.js",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+};
+```
+
+-   So we said `module.exports` and then it is a object where it has an `entry` point and an `output` path.
+
+-   Inside `output` it's another object first `filename` will be the name of the file that will generate and `path` will determine where to save it .
+
+-   We are using `path` which is a inbuilt node_module.
+
+-   Before we run our command add this to your `package.json`
+
+```js
+  "scripts": {
+    "start": "webpack --config webpack.config.js"
+  },
+```
+
+-   Now if you run `npm start` you will see main.js got all the minified codes!!. But wait isn't 😒 that's the same as we run by-default?
+
+-   Well no now we can add a lot's of different options like
+
+```js
+const path = require("path");
+
+module.exports = {
+    mode: "development", // added this line
+    entry: "./src/index.js",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+};
+```
+
+-   That line of code will stop the webpack to minified our code as we are still in development mode.
+
+-   You might got a notice like
+
+```js
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+```
+
+-   To fix this
+
+```js
+module.exports = {
+    mode: "development",
+    entry: "./src/index.js",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false, // add this line
+};
+```
+
+-   Now you can see all your js codes inside `dist/main.js`.
+-   Next we will learn how to handle different types of files and not only javascript.
