@@ -6,15 +6,15 @@
 
 ### Table of Contents
 
-| No. | Topics                                                            |
-| --- | ----------------------------------------------------------------- |
-| 1   | [Introduction](#1-introduction-🐱‍🏍)                              |
-| 2   | [Installing & Running Webpack](#2-installing--running-webpack-😎) |
-| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)        |
-| 4   | [Configuring Webpack](#4-configuring-webpack-🛰)                   |
-| 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass-🔃) |
+| No. | Topics                                                         |
+| --- | -------------------------------------------------------------- |
+| 1   | [Introduction](#1-introduction)                                |
+| 2   | [Installing & Running Webpack](#2-installing--running-webpack) |
+| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)     |
+| 4   | [Configuring Webpack](#4-configuring-webpack)                  |
+| 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass) |
 
-## 1. Introduction 🐱‍🏍
+## 1. Introduction
 
 A bundler for javascript and friends. Packs many modules into a few bundled assets. Code Splitting allows for loading parts of the application on demand. Through "loaders", modules can be CommonJs, AMD, ES6 modules, CSS, Images, JSON, Coffeescript, LESS, ... and your custom stuff.
 
@@ -25,7 +25,7 @@ A bundler for javascript and friends. Packs many modules into a few bundled asse
     <br>
     <br>
 
-## 2. Installing & Running Webpack 😎
+## 2. Installing & Running Webpack
 
 <br>
 
@@ -174,7 +174,7 @@ It is used for a simple and small projects where all the codes are present in on
 <br>
 <br>
 
-## 4. Configuring Webpack 🛰
+## 4. Configuring Webpack
 
 <br>
 
@@ -257,7 +257,7 @@ module.exports = {
     <br>
     <br>
 
-## 5. Webpack Loaders, CSS & SASS 🔃
+## 5. Webpack Loaders, CSS & SASS
 
 <br>
 
