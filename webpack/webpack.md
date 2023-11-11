@@ -13,6 +13,7 @@
 | 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)     |
 | 4   | [Configuring Webpack](#4-configuring-webpack)                  |
 | 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass) |
+| 6   | [Cache Busting & Plugins](#6-cache-busting--plugins)           |
 
 ## 1. Introduction
 
@@ -124,6 +125,8 @@ Module not found: Error: Can't resolve './src'
     <br>
     <br>
 
+**[⬆ Back to Top](#table-of-contents)**
+
 ## 3. Imports, Exports, & Modules
 
 <br>
@@ -173,6 +176,8 @@ It is used for a simple and small projects where all the codes are present in on
 
 <br>
 <br>
+
+**[⬆ Back to Top](#table-of-contents)**
 
 ## 4. Configuring Webpack
 
@@ -256,6 +261,8 @@ module.exports = {
 -   Next we will learn how to handle different types of files and not only javascript.
     <br>
     <br>
+
+**[⬆ Back to Top](#table-of-contents)**
 
 ## 5. Webpack Loaders, CSS & SASS
 
@@ -381,3 +388,107 @@ npm install sass-loader sass webpack --save-dev
         ],
     },
 ```
+
+<br>
+<br>
+
+**[⬆ Back to Top](#table-of-contents)**
+
+## 6. Cache Busting & Plugins
+
+<br>
+Update your code like this -
+
+```js
+// webpack.config.js
+
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+    },
+
+// output
+dist/main.03b93fab3298fdd4420c.js
+
+```
+
+What does `main.[contenthash].js` do is everytime we build our bundle files it will generate a new hash for the bundle so the cache data that the broswer saved it got refresh with new.
+<br>
+If we don't change the name like this then even if we chnage the bundle the browser will use the old cache files that he saved.
+
+<h2>But now how we gonna add that dynamic main.js??</h2>
+
+```js
+// This is how it looks right now
+<script src="./dist/main.js"></script>
+```
+
+And the answer is we don't do that , we will not use this script tab anymore and the thing that will help us do that is called `plugins`.
+
+<h1>Plugins</h1>
+<br>
+
+website : https://webpack.js.org/concepts/#plugins
+<br>
+list of plugins : https://webpack.js.org/plugins/
+
+**How to use**<br>
+Let's see the example with : **HtmlWebpackPlugin**<br>
+
+```js
+npm install --save-dev html-webpack-plugin
+```
+
+**Add the plugin to your webpack configuration as follows:**
+
+```js
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    mode: "development",
+    entry: "./src/index.js",
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
+        ],
+    },
+    plugins: [new HtmlWebpackPlugin()], // newly added
+};
+```
+
+-   now run
+
+```
+npm start
+```
+
+You will notice there's a new `index.html` file inside dist folder. But there is no content.
+<br>
+Let's fix it .
+
+-   Create a `template.html` inside `src` directory.
+
+-   Copy the entire content of `index.html` to `template.html`.
+
+Now change this -
+
+```js
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/template.html",
+            title: "Animated website",
+            scriptLoading: "blocking", // put the script inside body, if you not give this option it will put the script to head.
+        }),
+    ],
+```
+
+**[⬆ Back to Top](#table-of-contents)**
