@@ -53,7 +53,10 @@ project/
 │   └── js/
 ├── index.html
 └── webpack.config.js
+
 ```
+
+> We will learn `webpack.config.js` later ignore for now
 
 <h2 style="color:red">But wait this is just break codes into separate files, no webpack we used yet!!</h2>
 
@@ -125,6 +128,20 @@ Module not found: Error: Can't resolve './src'
 <br>
 <h1>😀1st method: (Note this method is for vanilla js projects)</h1>
 <br>
+
+**Structure for vanilla-js project**
+
+```
+                project/
+      --------->|-- dist/main.js ------------->
+      |         |-- src/                      |
+      |         │   |-- fonts/                |
+      |         │   |-- images/               |
+      |         │   |-- styles/               |
+      <---------|---|--index.js               |
+                ├── index.html <---------------
+```
+
 It is used for a simple and small projects where all the codes are present in one script file.
 
 -   Now add all the javascript code to your `index.js` and run `npm start`.
@@ -135,3 +152,16 @@ It is used for a simple and small projects where all the codes are present in on
 // index.html
 <script src="./dist/main.js"></script>
 ```
+
+<br>
+<br>
+<h1>😀2nd method: React</h1>
+<br>
+
+-   In `javascript` we only have a `js` file which will get minified and added to the `index.html`.
+-   But in react we will have a lot `components`, `utils`, `custom functions` etc.
+-   So we have to export them and add the entry point to the `index.js` which will later get minified and used by the application.
+
+-   Don't worry for now we will learn more when we use `webpack.config.js`.
+
+## 4. Configuring Webpack 🛰
