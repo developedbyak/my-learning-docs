@@ -11,6 +11,8 @@
 | 1   | [Introduction](#1-introduction-🐱‍🏍)                              |
 | 2   | [Installing & Running Webpack](#2-installing--running-webpack-😎) |
 | 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)        |
+| 4   | [Configuring Webpack](#4-configuring-webpack-🛰)                   |
+| 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass-🔃) |
 
 ## 1. Introduction 🐱‍🏍
 
@@ -252,3 +254,83 @@ module.exports = {
 
 -   Now you can see all your js codes inside `dist/main.js`.
 -   Next we will learn how to handle different types of files and not only javascript.
+    <br>
+    <br>
+
+## 5. Webpack Loaders, CSS & SASS 🔃
+
+<br>
+
+<h2>Loaders</h2>
+
+Docs: https://webpack.js.org/loaders/
+<br>
+<br>
+Loaders are transformations that are applied to the source code of a module. They allow you to pre-process files as you import or “load” them. Thus, loaders are kind of like “tasks” in other build tools and provide a powerful way to handle front-end build steps. Loaders can transform files from a different language (like TypeScript) to JavaScript or load inline images as data URLs. Loaders even allow you to do things like import CSS files directly from your JavaScript modules!
+
+<br>
+
+**We will start from adding css to out webpack:**
+
+-   Create a `main.css` file inside `src` folder.
+
+```js
+src / main.css;
+```
+
+-   Now we have to add loaders
+-   First we will setup `css-loader`
+
+```js
+npm install --save-dev style-loader css-loader
+```
+
+-   Now update config file like this :
+
+```js
+module.exports = {
+    mode: "development",
+    entry: "./src/index.js",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ["style-loader", "css-loader"],
+            },
+        ],
+    },
+};
+```
+
+```js
+test: /\.css$/i, (Case-Insensitive)
+
+The /i at the end makes the regular expression case-insensitive. This means it will match .css, .CSS, .CsS, etc.
+```
+
+```js
+test: /\.css$/, (Case-Sensitive)
+
+Without the /i, the regular expression is case-sensitive. It will only match files with the exact extension .css in the specified case.
+```
+
+-   Now add some css to `main.css`
+
+```css
+body {
+    background-color: purple;
+}
+```
+
+-   Run
+
+```js
+npm start
+```
+
+-   `css-loader` convert css to javascript and `style-loader` takes that javascript which is actually css and inject into DOM.
