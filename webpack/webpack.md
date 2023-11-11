@@ -6,13 +6,13 @@
 
 ### Table of Contents
 
-| No. | Topics                                                         |
-| --- | -------------------------------------------------------------- |
-| 1   | [Installation](#1-installation)                                |
-| 2   | [Installing & Running Webpack](#2-installing--running-webpack) |
-| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)     |
+| No. | Topics                                                            |
+| --- | ----------------------------------------------------------------- |
+| 1   | [Introduction](#1-introduction-🐱‍🏍)                              |
+| 2   | [Installing & Running Webpack](#2-installing--running-webpack-😎) |
+| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)        |
 
-## 1. Installation
+## 1. Introduction 🐱‍🏍
 
 A bundler for javascript and friends. Packs many modules into a few bundled assets. Code Splitting allows for loading parts of the application on demand. Through "loaders", modules can be CommonJs, AMD, ES6 modules, CSS, Images, JSON, Coffeescript, LESS, ... and your custom stuff.
 
@@ -20,9 +20,12 @@ A bundler for javascript and friends. Packs many modules into a few bundled asse
 
 -   It bundles our code/assets together
 -   It also manages dependencies
+    <br>
+    <br>
 
-## 2. Installing & Running Webpack
+## 2. Installing & Running Webpack 😎
 
+<br>
 **So first we bundle our assets or js files**:<br><br>
 **What does that mean ?**<br>
 
@@ -108,9 +111,27 @@ Module not found: Error: Can't resolve './src'
 -   Now you will see a `dist` folder has been created.
 -   Inside that dist folder you will have a `main.js` file which will have all the webpack magic code .
 -   Now link that `main.js` file to `index.html`, And if you refresh your website you will see the alert message.
+    <br>
+    <br>
 
 ## 3. Imports, Exports, & Modules
 
+<br>
+
 -   Now earlier we only write a single line of code into `index.js`.
 
--   Its time to import all our codes inside the `index.js` and we will do that using `ES6 import` methode.
+-   Its time to import all our codes inside the `index.js`.
+<br>
+<br>
+<h1>😀1st method: (Note this method is for vanilla js projects)</h1>
+<br>
+It is used for a simple and small projects where all the codes are present in one script file.
+
+-   Now add all the javascript code to your `index.js` and run `npm start`.
+-   You will see all the Javascript code is minified and added to the `main.js` which is link to our `index.html`;
+-   Note your `index.html` should only have the `main.js` link
+
+```js
+// index.html
+<script src="./dist/main.js"></script>
+```
