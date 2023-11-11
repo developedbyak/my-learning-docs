@@ -307,6 +307,16 @@ module.exports = {
 };
 ```
 
+<h2>Note: </h2>
+
+```js
+use: ["style-loader", "css-loader"];
+
+// the order will be like this first "style-loader" then "css-loader"
+```
+
+<h2>Things to know:</h2>
+
 ```js
 test: /\.css$/i, (Case-Insensitive)
 
@@ -334,3 +344,40 @@ npm start
 ```
 
 -   `css-loader` convert css to javascript and `style-loader` takes that javascript which is actually css and inject into DOM.
+
+<h2>If you want to add bootstrap to loader</h2>
+
+**steps to follow**
+
+```js
+// step: 1
+npm install --save-dev bootstrap
+
+// step: 2
+// Remove the bootstrap link from index.html
+
+// step: 3
+// main.css or main.scss
+@import "~bootstrap/scss/bootstrap"; or
+@import url("../node_modules/bootstrap/scss/bootstrap");
+
+// If you using scss follow this
+https://webpack.js.org/loaders/sass-loader
+
+// step: 4
+npm install sass-loader sass webpack --save-dev
+
+// step: 5
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    "style-loader", // Inject styles into DOM
+                    "css-loader", // Turns css into commonJS
+                    "sass-loader" // Turns sass into css
+                  ],
+            },
+        ],
+    },
+```
