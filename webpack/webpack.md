@@ -14,6 +14,7 @@
 | 4   | [Configuring Webpack](#4-configuring-webpack)                  |
 | 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass) |
 | 6   | [Cache Busting & Plugins](#6-cache-busting--plugins)           |
+| 7   | [Splitting Dev & Production](#7-splitting-dev--production)     |
 
 ## 1. Introduction
 
