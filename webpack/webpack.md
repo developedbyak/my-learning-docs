@@ -423,7 +423,7 @@ If we don't change the name like this then even if we chnage the bundle the brow
 <script src="./dist/main.js"></script>
 ```
 
-And the answer is we don't do that , we will not use this script tab anymore and the thing that will help us do that is called `plugins`.
+And the answer is we don't do that , we will not use this script anymore and the thing that will help us do is called `plugins`.
 
 <h1>Plugins</h1>
 <br>
@@ -453,6 +453,7 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
     },
     devtool: false,
+    plugins: [new HtmlWebpackPlugin()], // newly added
     module: {
         rules: [
             {
@@ -461,7 +462,6 @@ module.exports = {
             },
         ],
     },
-    plugins: [new HtmlWebpackPlugin()], // newly added
 };
 ```
 
@@ -492,3 +492,152 @@ Now change this -
 ```
 
 **[⬆ Back to Top](#table-of-contents)**
+
+<br>
+<br>
+
+## 7. Splitting Dev & Production
+
+<br>
+
+-   So we will have 3 different config files and each file will serve different purpose .
+
+```js
+// create all 3 config files -
+
+webpack.common.js; // renamed from webpack.config.js
+webpack.dev.js;
+webpack.prod.js;
+```
+
+-   And this is how it will be now :
+    <br>
+
+**webpack.common.js**<br>
+
+```js
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    entry: "./src/index.js",
+    devtool: false,
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/template.html",
+            title: "Animated website",
+            scriptLoading: "blocking",
+        }),
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
+        ],
+    },
+};
+```
+
+<br>
+
+**webpack.dev.js**
+
+```js
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    mode: "development",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+};
+```
+
+<br>
+
+**webpack.prod.js**
+
+```js
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    mode: "production",
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+};
+```
+
+-   Now
+
+```js
+npm install --save-dev webpack-merge
+```
+
+-   Merge the `webpack.common.js` with `webpack.dev.js`
+
+```js
+const path = require("path");
+const common = require("./webpack.common");
+const { merge } = require("webpack-merge");
+
+module.exports = merge(common, {
+    mode: "development",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+});
+```
+
+-   Do the same for production config
+
+```js
+const path = require("path");
+const common = require("./webpack.common");
+const { merge } = require("webpack-merge");
+
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+    },
+    devtool: false,
+});
+```
+
+-   Now the `common config` is merged with `dev` and `prod` which will give different output for development and production build.
+
+<h2>Let's setup the dev server</h2>
+why we need this ?<br>
+So everytime we made some changes we don't have to build everytime and test while on development mode .
+
+<br>
+
+```js
+npm install --save-dev webpack-dev-server
+```
+
+```js
+// package.json
+
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.dev.js --open",
+    "build": "webpack --config webpack.prod.js"
+  },
+```
+
+```js
+// it will open a dev server on browser now
+npm start
+```
