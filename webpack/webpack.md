@@ -6,15 +6,16 @@
 
 ### Table of Contents
 
-| No. | Topics                                                         |
-| --- | -------------------------------------------------------------- |
-| 1   | [Introduction](#1-introduction)                                |
-| 2   | [Installing & Running Webpack](#2-installing--running-webpack) |
-| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)     |
-| 4   | [Configuring Webpack](#4-configuring-webpack)                  |
-| 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass) |
-| 6   | [Cache Busting & Plugins](#6-cache-busting--plugins)           |
-| 7   | [Splitting Dev & Production](#7-splitting-dev--production)     |
+| No. | Topics                                                                                   |
+| --- | ---------------------------------------------------------------------------------------- |
+| 1   | [Introduction](#1-introduction)                                                          |
+| 2   | [Installing & Running Webpack](#2-installing--running-webpack)                           |
+| 3   | [Imports, Exports, & Modules](#3-imports-exports--modules)                               |
+| 4   | [Configuring Webpack](#4-configuring-webpack)                                            |
+| 5   | [Webpack Loaders, CSS & SASS 🔃](#5-webpack-loaders-css--sass)                           |
+| 6   | [Cache Busting & Plugins](#6-cache-busting--plugins)                                     |
+| 7   | [Splitting Dev & Production](#7-splitting-dev--production)                               |
+| 8   | [HTML-Loader & FILE-Loader, & clean webpack](#8-html-loader--file-loader--clean-webpack) |
 
 ## 1. Introduction
 
@@ -511,7 +512,7 @@ webpack.dev.js;
 webpack.prod.js;
 ```
 
--   And this is how it will be now :
+-   After changes:
     <br>
 
 **webpack.common.js**<br>
@@ -641,4 +642,141 @@ npm install --save-dev webpack-dev-server
 ```js
 // it will open a dev server on browser now
 npm start
+```
+
+<br>
+
+**[⬆ Back to Top](#table-of-contents)**
+
+## 8. HTML-Loader & FILE-Loader, & clean webpack
+
+<h2>Loader</h2>
+
+-   As you can see we can't access the assets files anymore.<br>
+    So let's fix it <br>
+
+**step: 1**<br>
+
+-   Now move the **`assets folder`** into **`src folder`**.
+-   In my case **`Images folder`** whic is already inside the src folder.
+
+**step: 2**<br>
+
+-   Change the path in template folder for all images.
+
+```js
+     <img src="/src/images/uns1.jpg" alt="jpg" />
+     <img src="/src/images/uns2.jpg" alt="jpg" />
+```
+
+-   But now if we run **`npm run build`** again the same issue will occure because there is no **`assets/images`** folder inside **`dist folder`**.
+
+**step: 3**<br>
+
+-   We need two loaders to help us first one is called **`html-loader`**.
+-   Docs for more info : https://webpack.js.org/loaders/html-loader/
+
+<br>
+
+```js
+npm install --save-dev html-loader
+```
+
+```js
+
+// webpack.common.js
+
+    module: {
+        rules: [
+            {
+                test: /\.html$/,
+                use: ["html-loader"],  // new added
+            },
+        ],
+    },
+```
+
+**step: 4**<br>
+
+-   Now that we have added **`html-loader`**.
+    It's time for **`file-loader`**.
+-   More info : https://v4.webpack.js.org/loaders/file-loader/
+-   **`In 2023`**
+
+```
+DEPRECATED for v5: please consider migrating to asset modules.
+```
+
+-   So we have to check here : https://webpack.js.org/guides/asset-modules/
+
+```js
+npm install file-loader --save-dev
+```
+
+```js
+
+// webpack.common.js
+
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
+            {
+                test: /\.html$/,
+                use: ["html-loader"],
+            },
+            {
+                test: /\.(svg|png|jpg|gif|mp4)$/,   // new added
+                type: "asset/resource",
+            },
+        ],
+    },
+
+```
+
+**Also update here**
+
+```js
+//dev
+module.exports = merge(common, {
+    mode: "development",
+    output: {
+        filename: "main.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "imgs/[hash][ext][query]", // new added
+    },
+});
+
+//prod
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "imgs/[hash][ext][query]", // new added
+    },
+});
+```
+
+-   So when web pack run it triggers the loader and then it gives each file a different name as we set it here and make a new folder called imgs. All images will be inside it.
+
+-   Now let's run **`npm run build`**.
+-   You will see a new imgs folder in dist and now try to open the index.html - **`start dist/index.html`** (windows).
+
+<h2>Cleaning up the /dist folder</h2>
+
+-   All you have to do is
+
+```js
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "main.[contenthash].js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+        clean: true, // add this single line
+    },
+});
 ```
