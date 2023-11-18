@@ -16,6 +16,7 @@
 | 6   | [Cache Busting & Plugins](#6-cache-busting--plugins)                                     |
 | 7   | [Splitting Dev & Production](#7-splitting-dev--production)                               |
 | 8   | [HTML-Loader & FILE-Loader, & clean webpack](#8-html-loader--file-loader--clean-webpack) |
+| 9   | [Multiple Entrypoints](#9-multiple-entrypoints)                                          |
 
 ## 1. Introduction
 
@@ -780,3 +781,56 @@ module.exports = merge(common, {
     },
 });
 ```
+
+<br>
+
+**[⬆ Back to Top](#table-of-contents)**
+
+## 9. Multiple Entrypoints
+
+**step: 1**<br>
+
+-   Create a **`vendor.js`** file inside src folder.
+-   Add some code - `console.log("hii from vender");`
+
+```js
+// webpack.common.js
+// update the entry point
+
+    entry: {
+        main: "./src/index.js",
+        vendor: "./src/vendor.js",
+    },
+```
+
+```js
+// webpack.prod.js
+
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "[name].[contenthash].bundle.js", // changed here
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+        clean: true,
+    },
+});
+
+// webpack.dev.js
+
+module.exports = merge(common, {
+    mode: "development",
+    output: {
+        filename: "[name].bundle.js", // and here
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+    },
+});
+```
+
+-   We just create a new entry point and set the config for that.
+-   Now run `npm start` & `npm run build` if all goes right you will see two folder in dist `main.bundle.js` & `vendor.bundle.js`.
+
+<br>
+
+**[⬆ Back to Top](#table-of-contents)**
