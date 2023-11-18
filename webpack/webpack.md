@@ -17,6 +17,7 @@
 | 7   | [Splitting Dev & Production](#7-splitting-dev--production)                               |
 | 8   | [HTML-Loader & FILE-Loader, & clean webpack](#8-html-loader--file-loader--clean-webpack) |
 | 9   | [Multiple Entrypoints](#9-multiple-entrypoints)                                          |
+| 10  | [Extract CSS & Minify HTML/JS/CSS](#10-extract-css--minify-htmljscss)                    |
 
 ## 1. Introduction
 
@@ -834,3 +835,99 @@ module.exports = merge(common, {
 <br>
 
 **[⬆ Back to Top](#table-of-contents)**
+
+## 10. Extract CSS & Minify HTML/JS/CSS
+
+-   You might have seen when your page loads its unstyled for a moment!. Because the css is getting injected from javascript file.
+
+-   So we will learn how to extract css into its own file and use it.
+
+-   And for that we will need `mini-css-extract-plugin`,
+    more info here: https://github.com/webpack-contrib/mini-css-extract-plugin
+
+<br>
+
+```js
+npm install --save-dev mini-css-extract-plugin
+```
+
+-   We only need this in production.
+
+**step: 1**
+
+```js
+// webpack.prod.js
+
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // import
+
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "[name].[contenthash].bundle.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+        clean: true,
+    },
+    plugins: [
+        // add plugin
+        new MiniCssExtractPlugin({
+            filename: "[name].[contentHash].css",
+        }),
+    ],
+});
+```
+
+**step: 2**
+
+```js
+// remove css rule from common config
+// add them separate for both dev and prod mode.
+
+// dev
+
+module.exports = merge(common, {
+    mode: "development",
+    output: {
+        filename: "[name].bundle.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
+        ],
+    },
+});
+
+// prod
+
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "[name].[contenthash].bundle.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
+        clean: true,
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: "[name].[hash].css",
+        }),
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
+            },
+        ],
+    },
+});
+```
+
+-   We only want to extract css in prod mode and not dev mode so we have to set different rule for both config.
+
+-   You can now run `npm run build` and have a look.
