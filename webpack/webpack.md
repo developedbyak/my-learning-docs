@@ -1,6 +1,6 @@
 # webpack
 
-<P>A bundler for javascript and friends.</P>
+<P>A bundler for javascript and friends :)</P>
 
 > Click :star:if you like the project and follow [@developedbyak](https://twitter.com/developedbyak) for more updates.
 
