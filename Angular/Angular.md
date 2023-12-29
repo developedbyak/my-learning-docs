@@ -16,4 +16,12 @@
 -   Framework vs Libraries
 -   Features of Angular
 
+<br>
+
+**`What is Angular?`**<br>
+
+-   A UI framework built by Google
+-   A component-based framework for building scalable app
+-   Provided collection of libraries to cover features like Routing, Forms.
+
 <!-- **[⬆ Back to Top](#table-of-contents)** -->

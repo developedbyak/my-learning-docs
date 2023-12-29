@@ -747,7 +747,7 @@ module.exports = merge(common, {
     output: {
         filename: "main.js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "imgs/[hash][ext][query]", // new added
+        assetModuleFilename: "imgs/[contenthash][ext][query]", // new added
     },
 });
 
@@ -757,7 +757,7 @@ module.exports = merge(common, {
     output: {
         filename: "main.[contenthash].js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "imgs/[hash][ext][query]", // new added
+        assetModuleFilename: "imgs/[contenthash][ext][query]", // new added
     },
 });
 ```
@@ -777,7 +777,7 @@ module.exports = merge(common, {
     output: {
         filename: "main.[contenthash].js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
         clean: true, // add this single line
     },
 });
@@ -812,7 +812,7 @@ module.exports = merge(common, {
     output: {
         filename: "[name].[contenthash].bundle.js", // changed here
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
         clean: true,
     },
 });
@@ -824,7 +824,7 @@ module.exports = merge(common, {
     output: {
         filename: "[name].bundle.js", // and here
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
     },
 });
 ```
@@ -837,6 +837,8 @@ module.exports = merge(common, {
 **[⬆ Back to Top](#table-of-contents)**
 
 ## 10. Extract CSS & Minify HTML/JS/CSS
+
+<h2>Extract CSS</h2>
 
 -   You might have seen when your page loads its unstyled for a moment!. Because the css is getting injected from javascript file.
 
@@ -865,7 +867,7 @@ module.exports = merge(common, {
     output: {
         filename: "[name].[contenthash].bundle.js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
         clean: true,
     },
     plugins: [
@@ -890,7 +892,7 @@ module.exports = merge(common, {
     output: {
         filename: "[name].bundle.js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
     },
     module: {
         rules: [
@@ -909,12 +911,12 @@ module.exports = merge(common, {
     output: {
         filename: "[name].[contenthash].bundle.js",
         path: path.resolve(__dirname, "dist"),
-        assetModuleFilename: "assets/[hash][ext][query]",
+        assetModuleFilename: "assets/[contenthash][ext][query]",
         clean: true,
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "[name].[hash].css",
+            filename: "[name].[contenthash].css",
         }),
     ],
     module: {
@@ -931,3 +933,164 @@ module.exports = merge(common, {
 -   We only want to extract css in prod mode and not dev mode so we have to set different rule for both config.
 
 -   You can now run `npm run build` and have a look.
+
+<h2>Minify HTML/JS/CSS</h2>
+
+-   Install this plugin
+
+```
+npm install --save-dev optimize-css-assets-webpack-plugin
+```
+
+-   Again we only need to do it in production.
+
+<h3>Only CSS Minify</h3>
+
+```js
+// webpack.prod.js
+
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin"); // import
+
+module.exports = merge(common, {
+    mode: "production",
+    // add here like this
+    optimization: {
+        minimizer: [new OptimizeCssAssetsPlugin()],
+    },
+});
+```
+
+-   Now if you run `npm run build` you will see css is getting minified but javascript is not minified anymore.
+
+-   Let's fix it
+
+<h3>CSS+JS Minify</h3>
+
+```js
+// webpack.prod.js
+// No need to install it's already inbuilt in webpack.
+const TerserPlugin = require("terser-webpack-plugin"); //import
+
+module.exports = merge(common, {
+    mode: "production",
+    // add here like this
+    optimization: {
+        minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin()],
+    },
+});
+```
+
+-   And you are done.
+
+<h3>HTML Minify</h3>
+
+-   Change in this manner -
+
+```js
+// webpack.common.js
+
+// Removed plugins totally.
+
+module.exports = {
+    entry: {
+        main: "./src/index.js",
+        vendor: "./src/vendor.js",
+    },
+    devtool: false,
+    module: {
+        rules: [
+            {
+                test: /\.html$/,
+                use: ["html-loader"],
+            },
+            {
+                test: /\.(svg|png|jpg|gif)$/,
+                type: "asset/resource",
+            },
+        ],
+    },
+};
+```
+
+```js
+// webpack.dev.js
+
+const path = require("path");
+const common = require("./webpack.common");
+const { merge } = require("webpack-merge");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = merge(common, {
+    mode: "development",
+    output: {
+        filename: "[name].bundle.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[contenthash][ext][query]",
+    },
+    plugins: [
+        // added here
+        new HtmlWebpackPlugin({
+            template: "./src/template.html",
+            scriptLoading: "blocking",
+        }),
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
+        ],
+    },
+});
+```
+
+```js
+// webpack.prod.js
+
+const path = require("path");
+const common = require("./webpack.common");
+const { merge } = require("webpack-merge");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = merge(common, {
+    mode: "production",
+    output: {
+        filename: "[name].[contenthash].bundle.js",
+        path: path.resolve(__dirname, "dist"),
+        assetModuleFilename: "assets/[contenthash][ext][query]",
+        clean: true,
+    },
+    optimization: {
+        minimizer: [
+            new OptimizeCssAssetsPlugin(),
+            new TerserPlugin(),
+            new HtmlWebpackPlugin({
+                template: "./src/template.html",
+                scriptLoading: "blocking",
+                minify: {
+                    removeAttributeQuotes: true,
+                    collapseWhitespace: true,
+                    removeComments: true,
+                },
+            }),
+        ],
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: "[name].[contenthash].css",
+        }),
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
+            },
+        ],
+    },
+});
+```
